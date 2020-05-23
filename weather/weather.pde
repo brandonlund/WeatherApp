@@ -3,7 +3,7 @@ import http.requests.*;
 import java.io.*;
 
 Data[] data;
-weatherDataForecast[] wForecast;
+public weatherDataForecast[] wForecast;
 weatherDataHourly[] wHourly;
 Menu menu = new Menu();
 int screen = 0;
@@ -11,7 +11,7 @@ int screen = 0;
 
 ControlP5 cp5;
 int num_locations;
-int num_forecast;
+public int num_forecast;
 int num_hourly;
 String api_url_forecast;
 String api_url_forecast_hourly;
@@ -19,6 +19,8 @@ public static String zip = "";
 boolean is_zip = false;
 PFont font;
 int zip_index = -1;
+boolean first_run = true;
+int old_index = 0;
 
 void setup()
 {
@@ -39,8 +41,15 @@ void draw()
   if (screen == 0)
   {
     menu.show_menu();
-    //println(" " + zip);
+    println(" " + zip);
     zip_index = find_loc_data(zip);
+    old_index = zip_index;
+    
+    if ( zip_index == -1 )
+    {
+      screen = 2;
+    }
+    
     if ( is_zip == true )
     {
       screen = 1;
@@ -48,12 +57,40 @@ void draw()
   }
   else if ( screen == 1 )
   {
+    println( "old_index: " + old_index );
+    println( "zip_index: " + zip_index );
+    zip_index = find_loc_data(zip);
+    
+    if ( zip_index == -1 )
+    {
+      screen = 2;
+    }
+    
+    if ( System.currentTimeMillis() % 10000 < 100 || first_run || old_index != zip_index )
+    {
+      get_weather();
+      first_run = false;
+    }
+    
+    old_index = zip_index;
     menu.show_menu();
   }
-  
+  else if ( screen == 2 )
+  {
+    zip_index = find_loc_data(zip);
+    
+    if ( zip_index == -1 )
+    {
+      screen = 2;
+    }
+    else
+    {
+      screen = 1; 
+    }
+  }
 }
 
-void weather()
+void get_weather()
 {
   String api_status;
   String api_OK = "OK";
@@ -116,6 +153,7 @@ void get_forecast()
     boolean is_day = wd.getBoolean("isDaytime");
     int temperature = wd.getInt("temperature");
     String temp_unit = wd.getString("temperatureUnit");
+    String icon = wd.getString("icon");
     if (wd.isNull("temperatureTrend"))
     {
       temp_trend = null;
@@ -129,11 +167,11 @@ void get_forecast()
     String short_forecast = wd.getString("shortForecast");
     String detailed_forecast = wd.getString("detailedForecast");
     
-    wForecast[i] = new weatherDataForecast(number, name, start_time, end_time, is_day, temperature, temp_unit, temp_trend, wind_speed, wind_direction, short_forecast, detailed_forecast);
+    wForecast[i] = new weatherDataForecast(number, name, start_time, end_time, is_day, temperature, temp_unit, temp_trend, wind_speed, wind_direction, icon, short_forecast, detailed_forecast);
   }
   
-  /*
-  for ( int i = 0; i < num_periods; i++)
+  
+  for ( int i = 0; i < num_forecast; i++)
   {
     println(wForecast[i].number);
     println(wForecast[i].name);
@@ -145,10 +183,11 @@ void get_forecast()
     println(wForecast[i].temp_trend);
     println(wForecast[i].wind_speed);
     println(wForecast[i].wind_direction);
+    println(wForecast[i].icon);
     println(wForecast[i].short_forecast);
     println(wForecast[i].detailed_forecast);
   }
-  */
+  
 }
 
 void get_hourly()
@@ -194,12 +233,14 @@ void get_hourly()
     println(wHourly[i].short_forecast);
   }
   */
+  
 }
 
 void generate_api_url( String gridID, int gridX, int gridY )
 {
   api_url_forecast = "https://api.weather.gov/gridpoints/" + gridID + "/" + gridX + "," + gridY + "/forecast";
   api_url_forecast_hourly = "https://api.weather.gov/gridpoints/" + gridID + "/" + gridX + "," + gridY + "/forecast/hourly";
+  println(api_url_forecast);
 }
 
 void json()
@@ -272,6 +313,7 @@ int find_loc_data(String zip)
     {
       println("Search took " + num_loops + " loops.");
       is_zip = true;
+      
       return m; 
     }
     // If x greater, ignore left half 
