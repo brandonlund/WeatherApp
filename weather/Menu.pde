@@ -1,11 +1,7 @@
 PImage img;
-PImage radar;
-
 
 class Menu
 {
-  
-  
   void show_menu()
   {
     switch (screen)
@@ -127,9 +123,43 @@ class Menu
       case 4:
         // RADAR
         background(#0A2840);
-        radar = loadImage("https://radar.weather.gov/Conus/Loop/NatLoop.gif");
-        radar.resize(displayWidth, displayHeight);
-        image( radar, 0, 0);
+        for ( int i = 0; i < 8; i++ )
+        {
+          radar[i].resize(displayWidth, displayHeight);
+        }
+        
+        if ( System.currentTimeMillis() % 5000 >= 0 && System.currentTimeMillis() % 5000 <= 625 )
+        {
+          image(radar[0], 0, 0);
+        }
+        else if (System.currentTimeMillis() % 5000 > 625 && System.currentTimeMillis() % 5000 <= 1250 )
+        {
+          image(radar[1], 0, 0);
+        }
+        else if (System.currentTimeMillis() % 5000 > 1250 && System.currentTimeMillis() % 5000 <= 1875 )
+        {
+          image(radar[2], 0, 0);
+        }
+        else if (System.currentTimeMillis() % 5000 > 1875 && System.currentTimeMillis() % 5000 <= 2500 )
+        {
+          image(radar[3], 0, 0);
+        }
+        else if (System.currentTimeMillis() % 5000 > 2500 && System.currentTimeMillis() % 5000 <= 3125 )
+        {
+          image(radar[4], 0, 0);
+        }
+        else if (System.currentTimeMillis() % 5000 > 3125 && System.currentTimeMillis() % 5000 <= 3750 )
+        {
+          image(radar[5], 0, 0);
+        }
+        else if (System.currentTimeMillis() % 5000 > 3750 && System.currentTimeMillis() % 5000 <= 4375 )
+        {
+          image(radar[6], 0, 0);
+        }
+        else if (System.currentTimeMillis() % 5000 > 4375)
+        {
+          image(radar[7], 0, 0);
+        }
         
         break;
       

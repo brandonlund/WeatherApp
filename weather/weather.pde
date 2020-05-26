@@ -1,12 +1,14 @@
 import controlP5.*;
 import http.requests.*;
 import java.io.*;
+import gifAnimation.*;
 
 Data[] data;
 public weatherDataForecast[] wForecast;
 weatherDataHourly[] wHourly;
 Menu menu = new Menu();
 MyButton radar_button;
+PImage[] radar;
 int screen = 0;
 
 
@@ -34,6 +36,8 @@ void setup()
   textFont(font);
   textAlign(CENTER);
   cp5.addTextfield("zip").setPosition(3*displayWidth/7, displayHeight/10).setSize(2*displayWidth/14, displayHeight/15).setFont(font).setFocus(true).setColor(255).setLabel("");
+  saveBytes( "radar.gif", loadBytes( "https://radar.weather.gov/Conus/Loop/NatLoop.gif" ) );
+  radar = Gif.getPImages(this, "radar.gif");
 }
 
 void draw()
@@ -98,6 +102,11 @@ void draw()
   }
   else if (screen == 4)
   {
+    if ( System.currentTimeMillis() % 601000 < 1000 )
+    {
+      saveBytes( "radar.gif", loadBytes( "https://radar.weather.gov/Conus/Loop/NatLoop.gif" ) );
+      radar = Gif.getPImages(this, "radar.gif");
+    }
     hide_textbox();
     menu.show_menu();
   }
