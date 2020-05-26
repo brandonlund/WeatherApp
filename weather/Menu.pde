@@ -1,15 +1,20 @@
 PImage img;
+PImage radar;
+
 
 class Menu
 {
   
+  
   void show_menu()
   {
-    
     switch (screen)
     {
       case 0:
+        // MAIN SCREEN
         background(#0A2840);
+        radar_button = new MyButton( 4 * displayWidth/5.0, displayHeight/5.0, displayHeight/5.0, displayHeight/10.0, "Radar", screen, 4);
+        screen = radar_button.check_press();
         textSize(displayWidth/25);
         text("Please Enter ZIP Code", displayWidth/2, displayHeight/15);
         //println(zip);
@@ -20,7 +25,10 @@ class Menu
         break;
         
       case 1:
+        // FORECAST
         background(#0A2840);
+        radar_button = new MyButton( 4 * displayWidth/5.0, displayHeight/5.0, displayHeight/5.0, displayHeight/10.0, "Radar", screen, 4);
+        screen = radar_button.check_press();
         textSize(displayWidth/25);
         text("Current ZIP Code: " + zip, displayWidth/2, displayHeight/15);
         
@@ -92,15 +100,36 @@ class Menu
           offset += 4 * displayWidth/35.0;
         }
         
+        
         break;
         
       case 2:
+        // ZIP NOT FOUND
         fill(#FFFFFF);
         background(#0A2840);
+        radar_button = new MyButton( 4 * displayWidth/5.0, displayHeight/5.0, displayHeight/5.0, displayHeight/10.0, "Radar", screen, 4);
+        screen = radar_button.check_press();
         textSize(displayWidth/25);
         text("Current ZIP Code: " + zip, displayWidth/2, displayHeight/15);
         
         text( "ZIP Code Does Not Exist.\nPlease Enter New ZIP Code.", displayWidth/2, displayHeight/2 );
+        
+        break;
+        
+      case 3:
+        // HOURLY
+        background(#0A2840);
+        radar_button = new MyButton( 4 * displayWidth/5.0, displayHeight/5.0, displayHeight/5.0, displayHeight/10.0, "Radar", screen, 4);
+        screen = radar_button.check_press();
+        
+        break;
+        
+      case 4:
+        // RADAR
+        background(#0A2840);
+        radar = loadImage("https://radar.weather.gov/Conus/Loop/NatLoop.gif");
+        radar.resize(displayWidth, displayHeight);
+        image( radar, 0, 0);
         
         break;
       
@@ -112,7 +141,5 @@ class Menu
     }
     
   }
-  
-  
   
 }

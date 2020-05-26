@@ -6,6 +6,7 @@ Data[] data;
 public weatherDataForecast[] wForecast;
 weatherDataHourly[] wHourly;
 Menu menu = new Menu();
+MyButton radar_button;
 int screen = 0;
 
 
@@ -29,7 +30,7 @@ void setup()
   json();
   fullScreen();
   smooth();
-  font = createFont("font.TTF", 128 * displayHeight / 1440);
+  font = createFont("font.TTF", 128);
   textFont(font);
   textAlign(CENTER);
   cp5.addTextfield("zip").setPosition(3*displayWidth/7, displayHeight/10).setSize(2*displayWidth/14, displayHeight/15).setFont(font).setFocus(true).setColor(255).setLabel("");
@@ -37,9 +38,14 @@ void setup()
 
 void draw()
 {
+  // RADAR BUTTON
+  radar_button = new MyButton( 4 * displayWidth/5.0, displayHeight/5.0, displayHeight/5.0, displayHeight/10.0, "Radar", screen, 4);
+  screen = radar_button.check_press();
+  println(screen);
   fill(255);
   if (screen == 0)
   {
+    show_textbox();
     menu.show_menu();
     println(" " + zip);
     zip_index = find_loc_data(zip);
@@ -57,6 +63,7 @@ void draw()
   }
   else if ( screen == 1 )
   {
+    show_textbox();
     println( "old_index: " + old_index );
     println( "zip_index: " + zip_index );
     zip_index = find_loc_data(zip);
@@ -77,6 +84,7 @@ void draw()
   }
   else if ( screen == 2 )
   {
+    show_textbox();
     zip_index = find_loc_data(zip);
     
     if ( zip_index == -1 )
@@ -88,6 +96,21 @@ void draw()
       screen = 1; 
     }
   }
+  else if (screen == 4)
+  {
+    hide_textbox();
+    menu.show_menu();
+  }
+}
+
+void hide_textbox()
+{
+  cp5.hide();
+}
+
+void show_textbox()
+{
+  cp5.show();
 }
 
 void get_weather()
